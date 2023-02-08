@@ -13,15 +13,15 @@ jobs:
       - run: docker build -t sweryant/react-test -f ./Dockerfile.dev .
       - run: docker run -e CI=true sweryant/react-test npm test
  
-      - run: docker build -t sweryant/multi-client-10-14 ./client .
-      - run: docker build -t sweryant/multi-nginx-10-14 ./nginx .
-      - run: docker build -t sweryant/multi-server-10-14 ./server .
-      - run: docker build -t sweryant/multi-worker-10-14 ./worker .
+      # - run: docker build -t sweryant/multi-client-10-14 ./client
+      # - run: docker build -t sweryant/multi-nginx-10-14 ./nginx
+      # - run: docker build -t sweryant/multi-server-10-14 ./server
+      # - run: docker build -t sweryant/multi-worker-10-14 ./worker
  
-      - run: docker push sweryant/multi-client-10-14
-      - run: docker push sweryant/multi-nginx-10-14
-      - run: docker push sweryant/multi-server-10-14
-      - run: docker push sweryant/multi-worker-10-14
+      # - run: docker push sweryant/multi-client-10-14
+      # - run: docker push sweryant/multi-nginx-10-14
+      # - run: docker push sweryant/multi-server-10-14
+      # - run: docker push sweryant/multi-worker-10-14
  
       - name: Generate deployment package
         run: zip -r deploy.zip . -x '*.git*'
