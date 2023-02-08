@@ -1,61 +1,39 @@
-# name: Deploy MultiDocker
-# on:
-#   push:
-#     branches:
-#       - master # check your repo, your default branch might be master!
+name: Deploy MultiDocker
+on:
+  push:
+    branches:
+      - master # check your repo, your default branch might be master!
  
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v2
-#       - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-#       - run: docker build -t sweryant/react-test -f ./client/Dockerfile.dev ./client
-#       - run: docker run -e CI=true sweryant/react-test npm test
- 
-#       - run: docker build -t sweryant/multi-client-10-14 ./client
-#       - run: docker build -t sweryant/multi-nginx-10-14 ./nginx
-#       - run: docker build -t sweryant/multi-server-10-14 ./server
-#       - run: docker build -t sweryant/multi-worker-10-14 ./worker
- 
-#       - run: docker push sweryant/multi-client-10-14
-#       - run: docker push sweryant/multi-nginx-10-14
-#       - run: docker push sweryant/multi-server-10-14
-#       - run: docker push sweryant/multi-worker-10-14
- 
-#       - name: Generate deployment package
-#         run: zip -r deploy.zip . -x '*.git*'
- 
-#       - name: Deploy to EB
-#         uses: einaregilsson/beanstalk-deploy@v18
-#         with:
-#           aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
-#           aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
-#           application_name: Docker
-#           environment_name: Docker-env
-#           existing_bucket_name: elasticbeanstalk-us-east-1-923445559289
-#           region: us-east-1
-#           version_label: ${{ github.sha }}
-#           deployment_package: deploy.zip
-name: Show Me the S3cr3tz
-on: [push]
-
 jobs:
-  debug:
-    name: Debug
+  build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-
-    - name: Set up secret file
-      env:
-        DEBUG_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        DEBUG_SECRET_KEY: ${{ secrets.DOCKER_USERNAME }}
-      run: |
-        echo $DEBUG_PASSWORD >> secrets.txt
-        echo $DEBUG_SECRET_KEY >> secrets.txt
-
-    - name: Run tmate
-      uses: mxschmitt/action-tmate@v2
+      - uses: actions/checkout@v2
+      - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - run: docker build -t sweryant/react-test -f ./client/Dockerfile.dev ./client
+      - run: docker run -e CI=true sweryant/react-test npm test
+ 
+      - run: docker build -t sweryant/multi-client-10-14 ./client
+      - run: docker build -t sweryant/multi-nginx-10-14 ./nginx
+      - run: docker build -t sweryant/multi-server-10-14 ./server
+      - run: docker build -t sweryant/multi-worker-10-14 ./worker
+ 
+      - run: docker push sweryant/multi-client-10-14
+      - run: docker push sweryant/multi-nginx-10-14
+      - run: docker push sweryant/multi-server-10-14
+      - run: docker push sweryant/multi-worker-10-14
+ 
+      - name: Generate deployment package
+        run: zip -r deploy.zip . -x '*.git*'
+ 
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v18
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
+          application_name: Docker
+          environment_name: Docker-env
+          existing_bucket_name: elasticbeanstalk-us-east-1-923445559289
+          region: us-east-1
+          version_label: ${{ github.sha }}
+          deployment_package: deploy.zip
